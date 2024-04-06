@@ -11,9 +11,6 @@ model Game {
   id             String  @id @default(uuid())
   player1        String
   player2        String
-  player1Figure  String  @default("X")
-  player2Figure  String  @default("O")
-  startingFigure String? @default("O")
   square1        String  @default("NONE")
   square2        String  @default("NONE")
   square3        String  @default("NONE")
