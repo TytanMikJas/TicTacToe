@@ -8,13 +8,18 @@ import {
   CardTitle,
 } from "@/components/shadcn/card";
 import { Input } from "@/components/shadcn/input";
+import { useUserStore } from "@/stores/user-store";
+import { useState } from "react";
 
 export default function LoginPage() {
+  const [username, setUsername] = useState("");
+  const { setUser } = useUserStore();
   const navigate = useNavigate();
-  
+
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    navigate("/game")
+    setUser(username);
+    navigate("/game");
   }
 
   return (
@@ -26,8 +31,14 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-5">
-            <Input placeholder="Your Name" />
-            <Button type='submit' className="w-full">Login</Button>
+            <Input
+              placeholder="Your Name"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
           </form>
         </CardContent>
       </Card>

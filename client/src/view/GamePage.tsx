@@ -1,32 +1,28 @@
-import FindPlayerButton from "@/components/GamePage/FindPlayerButton";
-import TicTacToe from "@/components/GamePage/TicTacToe";
-import { Figure, GameStatus } from "@/utils/enums";
+import Separator from "@/components/GamePage/Separator";
+import WelcomeText from "@/components/GamePage/WelcomeText";
+import { Button } from "@/components/shadcn/button";
+import { Input } from "@/components/shadcn/input";
+import { Label } from "@/components/shadcn/label";
+import { useUserStore } from "@/stores/user-store";
 
 export default function GamePage() {
-  const mockGame = {
-    id: "4132",
-    player1: "Alice",
-    player2: "Bob",
-    player1Figure: Figure.X,
-    player2Figure: Figure.O,
-    startingFigure: Figure.X,
-    square1: Figure.X,
-    square2: Figure.O,
-    square3: Figure.Empty,
-    square4: Figure.X,
-    square5: Figure.O,
-    square6: Figure.Empty,
-    square7: Figure.Empty,
-    square8: Figure.Empty,
-    square9: Figure.Empty,
-    status: GameStatus.IN_PROGRESS,
-  };
+  const { user } = useUserStore();
 
   return (
-    <div className="flex flex-col items-center space-y-4 pt-4">
-      <h1>Welcome {mockGame.player1}</h1>
-      <FindPlayerButton />
-      <TicTacToe game={mockGame} />
+    <div className="flex items-center space-y-4">
+      <div className="w-1/4 h-screen flex flex-col space-y-2 bg-gradient-to-r from-purple-100 to-blue-100">
+        <WelcomeText user={user} />
+        <div className="mx-3 flex flex-col">
+          <Label className="text-xl mb-1">Select an opponent</Label>
+          <Input></Input>
+          <Button className="mt-2">Send a game invite</Button>
+          <Separator text="OR" />
+          <Button>Find a random Player</Button>
+          <Label className="text-xl pt-10"> Pending games </Label>
+        </div>
+      </div>
+
+      <div>test</div>
     </div>
   );
 }

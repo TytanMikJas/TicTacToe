@@ -13,3 +13,5 @@ export interface GameStore {
   makeMove: (makeMoveDto: MakeMoveDto) => void;
 }
 
+
+
