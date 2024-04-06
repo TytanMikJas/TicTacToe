@@ -1,6 +1,6 @@
 import FindPlayerButton from "@/components/GamePage/FindPlayerButton";
 import TicTacToe from "@/components/GamePage/TicTacToe";
-import { Figure, GameStatus } from "@/stores/game-store";
+import { Figure, GameStatus } from "@/utils/enums";
 
 export default function GamePage() {
   const mockGame = {

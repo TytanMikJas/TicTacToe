@@ -1,4 +1,4 @@
-import { Game } from "@/stores/game-store";
+import Game from "@/stores/interface/game.interface";
 import Cell from "./Cell";
 
 interface BoardProps {

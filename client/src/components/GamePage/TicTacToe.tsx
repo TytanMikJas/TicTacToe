@@ -1,4 +1,3 @@
-import { Game } from "@/stores/game-store";
 import Board from "./board/Board";
 import {
   Card,
@@ -7,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../shadcn/card";
+import Game from "@/stores/interface/game.interface";
 
 interface TicTacToeProps {
   game: Game;
