@@ -7,19 +7,19 @@ interface BoardProps {
 }
 
 export default function Board({ game, onMakeMove }: BoardProps) {
-  const squares = [
-    game.square1, game.square2, game.square3,
-    game.square4, game.square5, game.square6,
-    game.square7, game.square8, game.square9,
-  ];
-
   return (
     <div className="w-96 h-96 mx-auto grid grid-cols-3 grid-rows-3 gap-0.5 bg-white">
-      {squares.map((value, index) => (
-        <div key={index} className="flex items-center justify-center border border-gray-300">
-          <Cell value={value} onMakeMove={() => onMakeMove(index + 1)} />
-        </div>
-      ))}
+      <Cell value={game.square1} onMakeMove={() => onMakeMove(1)} />
+      <Cell value={game.square2} onMakeMove={() => onMakeMove(2)} />
+      <Cell value={game.square3} onMakeMove={() => onMakeMove(3)} />
+
+      <Cell value={game.square4} onMakeMove={() => onMakeMove(4)} />
+      <Cell value={game.square5} onMakeMove={() => onMakeMove(5)} />
+      <Cell value={game.square6} onMakeMove={() => onMakeMove(6)} />
+
+      <Cell value={game.square7} onMakeMove={() => onMakeMove(7)} />
+      <Cell value={game.square8} onMakeMove={() => onMakeMove(8)} />
+      <Cell value={game.square9} onMakeMove={() => onMakeMove(9)} />
     </div>
   );
 }

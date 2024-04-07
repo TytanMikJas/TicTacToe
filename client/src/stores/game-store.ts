@@ -82,6 +82,7 @@ export const useGamesStore = create<GameStore>()(
         });
       },
       makeMove: (makeMoveDto: MakeMoveDto) => {
+        console.log("made move", makeMoveDto.gameId, makeMoveDto.square);
         socket?.emit("makeMove", makeMoveDto, (game: Game) => {
           set({
             inProgressGames: get().inProgressGames.map((g) =>
