@@ -8,7 +8,7 @@ interface BoardProps {
 
 export default function Board({ game, onMakeMove }: BoardProps) {
   return (
-    <div className="w-96 h-96 mx-auto grid grid-cols-3 grid-rows-3 gap-0.5 bg-white">
+    <div className="w-80 h-80 mx-auto grid grid-cols-3 grid-rows-3 gap-0.5 bg-white">
       <Cell value={game.square1} onMakeMove={() => onMakeMove(1)} />
       <Cell value={game.square2} onMakeMove={() => onMakeMove(2)} />
       <Cell value={game.square3} onMakeMove={() => onMakeMove(3)} />

@@ -32,41 +32,51 @@ export default function GamePage() {
 
   return (
     <div className="flex">
-      <div className="w-1/4 h-screen flex flex-col space-y-2 bg-gradient-to-r from-purple-100 to-blue-100">
+      <div className="w-1/4 h-screen flex flex-col space-y-2 bg-gradient-to-r from-red-100 to-blue-100">
         <WelcomeText user={user} />
         <div className="mx-3 flex flex-col">
-          <Label className="text-xl mb-1">Select an opponent</Label>
-          <Input
-            placeholder="Your friend"
-            value={oponent}
-            onChange={(e) => {
-              setoponent(e.target.value);
-            }}
-          />
-          <Button
-            className="mt-2"
-            onClick={() => createGame({ userId: user!, opponentId: oponent })}
-          >
-            Send a game invite
-          </Button>
-          <Separator text="OR" />
-          <Button onClick={() => createGame({ userId: user! })}>
-            Find a random Player
-          </Button>
-          <Label className="text-xl pt-10"> Pending games </Label>
-          {myPendingGames.map((game) => (
-            <div key={game.id} className="flex justify-between py-2">
-              <Label className="text-lg">
-                {game.player1} vs {game.player2}
-              </Label>
-              <Button onClick={() => joinGame(game.id)}>Join</Button>
-            </div>
-          ))}
+          <div>
+            <Label className="text-xl mb-2">Select an opponent</Label>
+            <Input
+              placeholder="Your friend"
+              value={oponent}
+              onChange={(e) => {
+                setoponent(e.target.value);
+              }}
+            />
+            <Button
+              className="mt-2 w-full"
+              onClick={() => createGame({ userId: user!, opponentId: oponent })}
+            >
+              Send a game invite
+            </Button>
+            <Separator text="OR" />
+            <Button
+              className="w-full"
+              onClick={() => createGame({ userId: user! })}
+            >
+              Find a random Player
+            </Button>
+          </div>
+          <div className="pt-10 space-y-2">
+            <Label className="text-xl"> Pending games </Label>
+            {myPendingGames.map((game) => (
+              <div
+                key={game.id}
+                className="flex justify-between items-center rounded-xl shadow-sm bg-gray-50"
+              >
+                <Label className="text-lg ms-2">
+                  {game.player1} vs {game.player2}
+                </Label>
+                <Button onClick={() => joinGame(game.id)}>Join</Button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       <div className="flex flex-col">
-        <div className="grid grid-cols-2 ms-8 mt-8 gap-8">
+        <div className="grid grid-cols-3 ms-8 mt-8 gap-8">
           {inProgressGames.length === 0 ? (
             <Label>No games in progress</Label>
           ) : (
