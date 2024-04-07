@@ -7,6 +7,8 @@ import {
   CardTitle,
 } from "../shadcn/card";
 import Game from "../../stores/interface/game.interface";
+import { GameStatus } from "../../utils/enums";
+import EndOfGameMessage from "./board/EndOfGameMessage";
 
 interface TicTacToeProps {
   game: Game;
@@ -24,7 +26,7 @@ export default function TicTacToe({ game, player, makeMove }: TicTacToeProps) {
         <CardDescription>Your mark is {player === game.player1 ? "X" : "O" }</CardDescription>
       </CardHeader>
       <CardContent>
-        <Board game={game} onMakeMove={makeMove} />
+        {game.status === GameStatus.IN_PROGRESS ? <Board game={game} onMakeMove={makeMove} /> : <EndOfGameMessage game={game} player={player} />}
       </CardContent>
     </Card>
   );
