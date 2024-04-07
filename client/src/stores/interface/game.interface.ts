@@ -1,4 +1,4 @@
-import { Figure, GameStatus } from "@/utils/enums";
+import { Figure, GameStatus } from "../../utils/enums";
 
 export default interface Game {
   id: string;
