@@ -1,7 +1,7 @@
 export enum Figure {
   X = "X",
   O = "O",
-  Empty = "NONE",
+  NONE = "NONE",
 }
 
 export enum GameStatus {

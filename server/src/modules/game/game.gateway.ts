@@ -24,7 +24,7 @@ export default class GameGateway
 
   @WebSocketServer()
   server: Server;
-  connectedClients: string[];
+  connectedClients: string[] = [];
 
   async afterInit(): Promise<void> {}
 
@@ -50,20 +50,20 @@ export default class GameGateway
     @MessageBody() data: CreateGameDto,
   ): Promise<Game> {
     const userId = client.handshake.auth.userId as string;
-    if (data.oponentId === data.userId) {
+    if (data.opponentId === data.userId) {
       throw new BadRequestException('You cannot play against yourself');
     }
     let game = null;
-    if (data.oponentId) {
+    if (data.opponentId) {
       game = await this.gameService.createGame(data);
     } else {
-      const oponentId = this.connectedClients.find((id) => id !== userId);
-      if (!oponentId) {
-        throw new BadRequestException('No available oponents');
+      const opponentId = this.connectedClients.find((id) => id !== userId);
+      if (!opponentId) {
+        throw new BadRequestException('No available opponents');
       }
       game = await this.gameService.createGame({
         userId,
-        oponentId,
+        opponentId,
       });
     }
     client.join(game.id);

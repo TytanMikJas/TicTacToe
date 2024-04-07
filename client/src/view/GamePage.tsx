@@ -37,7 +37,9 @@ export default function GamePage() {
           <Input
             placeholder="Your friend"
             value={oponent}
-            onChange={(e) => {setoponent(e.target.value); console.log(oponent)}}
+            onChange={(e) => {
+              setoponent(e.target.value);
+            }}
           />
           <Button
             className="mt-2"

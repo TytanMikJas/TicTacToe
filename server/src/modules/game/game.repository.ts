@@ -26,7 +26,7 @@ export default class GameRepository {
     return await this.prisma.game.create({
       data: {
         player1: data.userId,
-        player2: data.oponentId,
+        player2: data.opponentId,
         status: GameStatus.PENDING,
       },
     });

@@ -121,16 +121,18 @@ export default class GameService {
     ];
 
     for (const [a, b, c] of winningCombinations) {
-      if (a === b && b === c && a !== Figure.NONE) {
-        if (a === Figure.X) {
-          return GameStatus.PLAYER_1_WON;
-        } else if (a === Figure.O) {
-          return GameStatus.PLAYER_2_WON;
-        }
+      if (a !== Figure.NONE && a === b && b === c) {
+        return a === Figure.X
+          ? GameStatus.PLAYER_1_WON
+          : GameStatus.PLAYER_2_WON;
       }
     }
 
-    const isDraw = squares.every((square) => square !== 'NONE');
-    return isDraw ? GameStatus.DRAW : GameStatus.IN_PROGRESS;
+    const isDraw = squares.every((square) => square !== Figure.NONE);
+    if (isDraw) {
+      return GameStatus.DRAW;
+    }
+
+    return GameStatus.IN_PROGRESS;
   }
 }

@@ -1,5 +1,6 @@
 import OMarker from "./OMarker";
 import XMarker from "./XMarker";
+import { Figure } from "../../../utils/enums";
 
 interface CellProps {
   value: string;
@@ -7,10 +8,13 @@ interface CellProps {
 }
 
 export default function Cell({ value, onMakeMove }: CellProps) {
-  const Marker = value === "X" ? XMarker : value === "O" ? OMarker : null;
+  const Marker = value === Figure.X ? XMarker : value === Figure.O ? OMarker : null;
 
   return (
-    <div className="w-30 h-30 flex items-center justify-center" onClick={onMakeMove}>
+    <div
+      className="w-30 h-30 flex items-center justify-center"
+      onClick={onMakeMove}
+    >
       {Marker && <Marker />}
     </div>
   );
