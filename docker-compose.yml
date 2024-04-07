@@ -14,6 +14,10 @@ services:
       - "5000:5000"
     networks:
       - chmura_int
+      - chmura_ext
 networks:
   chmura_int:
     internal: true
+  chmura_ext:
+    internal: false
+    external: true
