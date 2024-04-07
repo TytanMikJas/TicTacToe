@@ -12,7 +12,7 @@ export default function Cell({ value, onMakeMove }: CellProps) {
 
   return (
     <div
-      className="w-30 h-30 flex items-center justify-center"
+      className="w-30 h-30 flex items-center justify-center hover:bg-gray-100 cursor-pointer"
       onClick={onMakeMove}
     >
       {Marker && <Marker />}

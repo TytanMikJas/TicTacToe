@@ -53,9 +53,9 @@ export default class GameGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() data: CreateGameDto,
   ): Promise<Game> {
+    console.log(data.userId, data.opponentId);
     const userId = client.handshake.auth.userId as string;
     if (data.opponentId === data.userId) {
-      console.log(data.opponentId, data.userId);
       throw new BadRequestException('You cannot play against yourself');
     }
     let game = null;

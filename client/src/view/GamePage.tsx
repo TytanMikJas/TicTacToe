@@ -19,13 +19,11 @@ export default function GamePage() {
     joinGame,
     makeMove,
   } = useGamesStore();
-  const myPendingGames = pendingGames.filter(
-    (g) => g.player2 === user
-  );
+  const myPendingGames = pendingGames.filter((g) => g.player2 === user);
   const [oponent, setoponent] = useState("");
 
   useEffect(() => {
-    console.log({user})
+    console.log({ user });
     connect(user!);
     return () => {
       disconnect();
@@ -33,7 +31,7 @@ export default function GamePage() {
   }, []);
 
   return (
-    <div className="flex items-center space-y-4">
+    <div className="flex">
       <div className="w-1/4 h-screen flex flex-col space-y-2 bg-gradient-to-r from-purple-100 to-blue-100">
         <WelcomeText user={user} />
         <div className="mx-3 flex flex-col">
@@ -47,17 +45,17 @@ export default function GamePage() {
           />
           <Button
             className="mt-2"
-            onClick={() => createGame({ playerId: user!, oponentId: oponent })}
+            onClick={() => createGame({ userId: user!, opponentId: oponent })}
           >
             Send a game invite
           </Button>
           <Separator text="OR" />
-          <Button onClick={() => createGame({ playerId: user! })}>
+          <Button onClick={() => createGame({ userId: user! })}>
             Find a random Player
           </Button>
           <Label className="text-xl pt-10"> Pending games </Label>
           {myPendingGames.map((game) => (
-            <div key={game.id} className="flex justify-between">
+            <div key={game.id} className="flex justify-between py-2">
               <Label className="text-lg">
                 {game.player1} vs {game.player2}
               </Label>
@@ -67,19 +65,24 @@ export default function GamePage() {
         </div>
       </div>
 
-      <div>
-        <Label className="text-xl mb-1">Current Games:</Label>
-        {inProgressGames.map((game) => (
-          <div>
-            <TicTacToe
-              game={game}
-              player={user!}
-              makeMove={(position: number) =>
-                makeMove({ gameId: game.id, square: position })
-              }
-            />
-          </div>
-        ))}
+      <div className="flex flex-col">
+        <div className="grid grid-cols-2 ms-8 mt-8 gap-8">
+          {inProgressGames.length === 0 ? (
+            <Label>No games in progress</Label>
+          ) : (
+            inProgressGames.map((game) => (
+              <div>
+                <TicTacToe
+                  game={game}
+                  player={user!}
+                  makeMove={(position: number) =>
+                    makeMove({ gameId: game.id, square: position })
+                  }
+                />
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ interface TicTacToeProps {
 
 export default function TicTacToe({ game, player, makeMove }: TicTacToeProps) {
   return (
-    <Card className="w-1/4">
+    <Card>
       <CardHeader className="fiex">
         <CardTitle>
           {game.player1} vs {game.player2}

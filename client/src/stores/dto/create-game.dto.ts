@@ -1,4 +1,4 @@
 export default interface CreateGameDto {
-  playerId: string;
-  oponentId?: string;
+  userId: string;
+  opponentId?: string;
 }
