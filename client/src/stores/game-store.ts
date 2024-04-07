@@ -5,7 +5,7 @@ import Game from "./interface/game.interface";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { Socket } from "socket.io-client";
 import { createSocket } from "../utils/socket-io";
-import { GameStatus } from "@/utils/enums";
+import { GameStatus } from "../utils/enums";
 
 export interface GameStore {
   pendingGames: Game[];

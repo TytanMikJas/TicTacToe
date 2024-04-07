@@ -1,11 +1,11 @@
-import Separator from "@/components/GamePage/Separator";
-import TicTacToe from "@/components/GamePage/TicTacToe";
-import WelcomeText from "@/components/GamePage/WelcomeText";
-import { Button } from "@/components/shadcn/button";
-import { Input } from "@/components/shadcn/input";
-import { Label } from "@/components/shadcn/label";
-import { useGamesStore } from "@/stores/game-store";
-import { useUserStore } from "@/stores/user-store";
+import Separator from "../components/GamePage/Separator";
+import TicTacToe from "../components/GamePage/TicTacToe";
+import WelcomeText from "../components/GamePage/WelcomeText";
+import { Button } from "../components/shadcn/button";
+import { Input } from "../components/shadcn/input";
+import { Label } from "../components/shadcn/label";
+import { useGamesStore } from "../stores/game-store";
+import { useUserStore } from "../stores/user-store";
 import { useEffect, useState } from "react";
 
 export default function GamePage() {

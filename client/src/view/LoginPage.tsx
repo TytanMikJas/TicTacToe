@@ -1,4 +1,4 @@
-import { Button } from "@/components/shadcn/button";
+import { Button } from "../components/shadcn/button";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -6,9 +6,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/shadcn/card";
-import { Input } from "@/components/shadcn/input";
-import { useUserStore } from "@/stores/user-store";
+} from "../components/shadcn/card";
+import { Input } from "../components/shadcn/input";
+import { useUserStore } from "../stores/user-store";
 import { useState } from "react";
 
 export default function LoginPage() {
