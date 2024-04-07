@@ -22,13 +22,13 @@ export default class GameGateway
 {
   constructor(private readonly gameService: GameService) {}
 
-  @WebSocketServer()
-  server: Server;
-  connectedClients: string[] = [];
-
-  async afterInit(): Promise<void> {}
+  async afterInit(): Promise<void> {
+    console.log('init');
+    this.connectedClients = [];
+  }
 
   async handleConnection(client: any) {
+    console.log('handleConnection');
     const userId = client.handshake.auth.userId;
     const userGames = await this.gameService.getGames(userId);
     userGames.forEach((game) => {
@@ -36,13 +36,17 @@ export default class GameGateway
     });
     client.join(userId);
     this.connectedClients.push(userId);
-    client.to(userId).emit('connected', 'You are connected');
+    this.server.to(userId).emit('connected', 'connected');
   }
 
   async handleDisconnect(client: any) {
     const userId = client.handshake.auth.userId;
     this.connectedClients = this.connectedClients.filter((id) => id !== userId);
   }
+
+  connectedClients: string[] = [];
+
+  @WebSocketServer() server: Server;
 
   @SubscribeMessage('createGame')
   async createGame(
@@ -51,6 +55,7 @@ export default class GameGateway
   ): Promise<Game> {
     const userId = client.handshake.auth.userId as string;
     if (data.opponentId === data.userId) {
+      console.log(data.opponentId, data.userId);
       throw new BadRequestException('You cannot play against yourself');
     }
     let game = null;
@@ -99,8 +104,8 @@ export default class GameGateway
   ): Promise<Game> {
     const userId = client.handshake.auth.userId as string;
     const game = await this.gameService.joinGame(gameId, userId);
-    client.join(game.id);
     client.to(game.player1).emit('gameJoined', game);
+    client.join(game.id);
     return game;
   }
 }

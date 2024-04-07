@@ -19,14 +19,18 @@ export default function GamePage() {
     joinGame,
     makeMove,
   } = useGamesStore();
+  const myPendingGames = pendingGames.filter(
+    (g) => g.player2 === user
+  );
   const [oponent, setoponent] = useState("");
 
   useEffect(() => {
+    console.log({user})
     connect(user!);
     return () => {
       disconnect();
     };
-  });
+  }, []);
 
   return (
     <div className="flex items-center space-y-4">
@@ -52,7 +56,7 @@ export default function GamePage() {
             Find a random Player
           </Button>
           <Label className="text-xl pt-10"> Pending games </Label>
-          {pendingGames.map((game) => (
+          {myPendingGames.map((game) => (
             <div key={game.id} className="flex justify-between">
               <Label className="text-lg">
                 {game.player1} vs {game.player2}

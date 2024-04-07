@@ -27,9 +27,12 @@ export const useGamesStore = create<GameStore>()(
       inProgressGames: [],
 
       connect: (userId: string) => {
+        console.log("connecting-store")
         const _socket = createSocket(userId);
+        console.log("createSocket")
         socket = _socket;
         socket.connect();
+        console.log("connect")
         _socket.on("connect", () => {
           socket?.emit("getGames", (games: Game[]) => {
             set({
@@ -43,6 +46,7 @@ export const useGamesStore = create<GameStore>()(
           });
         });
         _socket.connect();
+        console.log("_socket.connect()")
         _socket.on("gameCreated", (game: Game) => {
           set({ pendingGames: [...get().pendingGames, game] });
         });
