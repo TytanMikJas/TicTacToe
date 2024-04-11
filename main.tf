@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "eu-central-1"
+  region = "us-east-1"
 }
 
 resource "aws_vpc" "app_vpc" {
@@ -14,7 +14,7 @@ resource "aws_vpc" "app_vpc" {
 resource "aws_subnet" "app_subnet" {
   vpc_id            = aws_vpc.app_vpc.id
   cidr_block        = "10.0.1.0/24"
-  availability_zone = "eu-central-1a"
+  availability_zone = "us-east-1a"
   tags = {
     Name = "app_subnet"
   }
@@ -98,9 +98,4 @@ resource "aws_instance" "app_instance" {
   tags = {
     Name = "TicTacToeServer"
   }
-}
-
-resource "aws_key_pair" "my_key_pair" {
-  key_name   = "deployer-key"
-  public_key = file("~/.ssh/chmura.pub")
 }
