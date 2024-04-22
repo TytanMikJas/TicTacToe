@@ -170,8 +170,8 @@ resource "aws_s3_bucket" "app_bucket" {
 }
 resource "aws_s3_object" "app_s3o" {
   bucket = aws_s3_bucket.app_bucket.bucket
-  key    = "deploy.zip"
-  source = "deploy.zip"
+  key    = "dep.zip"
+  source = "dep.zip"
 }
 
 
