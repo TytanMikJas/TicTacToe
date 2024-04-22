@@ -1,0 +1,61 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "volumes": [
+      {
+        "name": "back-log-volume",
+        "host": {
+          "sourcePath": "/var/app/back/logs"
+        }
+      },
+      {
+        "name": "front-log-volume",
+        "host": {
+          "sourcePath": "/var/app/front/logs"
+        }
+      }
+    ],
+    "containerDefinitions": [
+      {
+        "name": "server", 
+        "image": "tytanmikjas/tictactoe-server:latest",
+        "essential": true,
+        "memory": 128,
+        "mountPoints": [
+          {
+            "sourceVolume": "back-log-volume",
+            "containerPath": "/usr/src/app/logs",
+            "readOnly": false
+          }
+        ],
+        "portMappings": [
+          {
+            "hostPort": 3000,
+            "containerPort": 3000
+          }
+        ]
+      },
+      {
+        "name": "client",
+        "image": "tytanmikjas/tictactoe-client:latest",
+        "essential": true,
+        "memory": 128,
+        "mountPoints": [
+          {
+            "sourceVolume": "front-log-volume",
+            "containerPath": "/usr/src/app/logs",
+            "readOnly": false
+          }
+        ],
+        "portMappings": [
+          {
+            "hostPort": 5000,
+            "containerPort": 5000
+          }
+        ],
+        "links": [
+          "back:back"
+        ]
+      }
+    ]
+  }
+  

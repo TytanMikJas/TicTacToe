@@ -13,6 +13,14 @@ resource "aws_vpc" "app_vpc" {
   }
 }
 
+# Create an internet gateway and attach it to the VPC, and assign tags
+resource "aws_internet_gateway" "app_gateway" {
+  vpc_id = aws_vpc.app_vpc.id
+  tags = {
+    Name = "app_gateway"
+  }
+}
+
 # Create a subnet within the VPC, specify its CIDR block, availability zone, and assign tags
 resource "aws_subnet" "app_subnet" {
   vpc_id            = aws_vpc.app_vpc.id
@@ -23,13 +31,7 @@ resource "aws_subnet" "app_subnet" {
   }
 }
 
-# Create an internet gateway and attach it to the VPC, and assign tags
-resource "aws_internet_gateway" "app_gateway" {
-  vpc_id = aws_vpc.app_vpc.id
-  tags = {
-    Name = "app_gateway"
-  }
-}
+
 
 # Create a route table within the VPC, specify a default route to the internet gateway, and assign tags
 resource "aws_route_table" "app_route_table" {
@@ -51,7 +53,7 @@ resource "aws_route_table_association" "my_route_table_association" {
 
 # Create a security group to control inbound and outbound traffic, and assign tags
 resource "aws_security_group" "app_sg" {
-  name        = "tic_tac_toe_sg"
+  name        = "app_sg"
   description = "Allow web and db traffic"
   vpc_id      = aws_vpc.app_vpc.id
 
@@ -59,13 +61,6 @@ resource "aws_security_group" "app_sg" {
   ingress {
     from_port   = 22
     to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -97,15 +92,89 @@ resource "aws_security_group" "app_sg" {
   }
 }
 
-# Launch an EC2 instance with specified AMI, instance type, subnet, security group, SSH key, assign public IP, and assign tags
-resource "aws_instance" "app_instance" {
-  ami                         = "ami-0a44aefa5a8df82eb" // Replace with appropriate AMI
-  instance_type               = "t2.small"
-  subnet_id                   = aws_subnet.app_subnet.id
-  security_groups             = [aws_security_group.app_sg.id]
-  key_name                    = "deployer-key" # Replace with your SSH key pair name if you plan to SSH into your instance
-  associate_public_ip_address = true
-  tags = {
-    Name = "TicTacToeServer"
+resource "aws_elastic_beanstalk_application" "app_eba" {
+  name        = "app_eba"
+  description = "Chmura app"
+}
+
+resource "aws_elastic_beanstalk_environment" "app_ebe" {
+  name                = "appebeenv"
+  application         = aws_elastic_beanstalk_application.app_eba.name
+  solution_stack_name = "64bit Amazon Linux 2 v3.3.0 running ECS"
+  version_label       = aws_elastic_beanstalk_application_version.app_v.name
+  cname_prefix        = "tytan-chmura"
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "IamInstanceProfile"
+    value     = "LabInstanceProfile"
+    resource  = ""
   }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "VPCId"
+    value     = aws_vpc.app_vpc.id
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "Subnets"
+    value     = aws_subnet.app_subnet.id
+  }
+
+  setting { # public ip address allows to connect
+    namespace = "aws:ec2:vpc"
+    name      = "AssociatePublicIpAddress"
+    value     = "true"
+  }
+  setting { # single EC2 instance to save costs for tests, load balanced when application ready for production
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "EnvironmentType"
+    value     = "SingleInstance"
+  }
+  setting { # AWS service role
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "ServiceRole"
+    value     = "arn:aws:iam::612310298487:role/LabRole"
+  }
+
+  setting { # supported architectures
+    namespace = "aws:ec2:instances"
+    name      = "SupportedArchitectures"
+    value     = "x86_64"
+  }
+
+  setting { # EC2 instance type
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "InstanceType"
+    value     = "t2.small"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "SecurityGroups"
+    value     = aws_security_group.app_sg.id
+  }
+}
+
+resource "aws_elastic_beanstalk_application_version" "app_v" {
+  name        = "app_v1"
+  application = aws_elastic_beanstalk_application.app_eba.name
+  description = "application version created by terraform"
+  bucket      = aws_s3_bucket.app_bucket.bucket
+  key         = aws_s3_object.app_s3o.key
+}
+
+resource "aws_s3_bucket" "app_bucket" {
+  bucket = "appbuckettytan"
+}
+resource "aws_s3_object" "app_s3o" {
+  bucket = aws_s3_bucket.app_bucket.bucket
+  key    = "deploy.zip"
+  source = "deploy.zip"
+}
+
+
+output "elastic_beanstalk_app_url" {
+  value = "http://${aws_elastic_beanstalk_environment.app_ebe.cname}:5000"
 }

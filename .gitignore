@@ -3,3 +3,4 @@ publicKey
 .terraform.lock.hcl
 terraform.tfstate
 .terraform
+terraform.tfstate.backup
