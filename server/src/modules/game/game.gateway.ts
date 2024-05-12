@@ -14,22 +14,38 @@ import GameService from './game.service';
 import CreateGameDto from './dto/create-game.dto';
 import MakeMoveDto from './dto/make-move.dto';
 import { Game } from '@prisma/client';
+import AuthService from '../auth/auth.service';
 
 @WebSocketGateway({ transports: ['websocket'], cors: true })
 @Injectable()
 export default class GameGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
-  constructor(private readonly gameService: GameService) {}
+  constructor(
+    private readonly gameService: GameService,
+    private readonly authService: AuthService,
+  ) {}
 
-  async afterInit(): Promise<void> {
-    console.log('init');
-    this.connectedClients = [];
+  async afterInit(server: Server) {
+    server.use(async (socket, next) => {
+      const accessToken = socket.handshake.query.accessToken;
+      if (!accessToken) {
+        return next(new Error('Unauthorized'));
+      }
+      const user = await this.authService.userFromJwt(accessToken as string);
+      if (!user) {
+        return next(new Error('Unauthorized'));
+      }
+      socket.handshake.auth = user;
+      socket.handshake.auth.userId = user.UserAttributes.find(
+        (attr) => attr.Name === 'email',
+      ).Value;
+      next();
+    });
   }
 
   async handleConnection(client: any) {
-    console.log('handleConnection');
-    const userId = client.handshake.auth.userId;
+    const userId = client.handshake.auth.userId as string;
     const userGames = await this.gameService.getGames(userId);
     userGames.forEach((game) => {
       client.join(game.id);

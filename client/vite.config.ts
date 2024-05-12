@@ -7,15 +7,32 @@ export default defineConfig({
   preview: {
     port: 5000,
     strictPort: true,
-    host:'0.0.0.0',
+    host: "0.0.0.0",
     cors: true,
     proxy: {
-      '/ws/': {
-        target: 'http://server:3000/socket.io/',
+      "/ws/": {
+        target: "http://server:3000/socket.io/",
         ws: true,
         changeOrigin: true,
-        secure: false
-      }
-    }
-  }
-})
+        secure: false,
+      },
+    },
+  },
+  server: {
+    port: 5000,
+    strictPort: true,
+    host: "0.0.0.0",
+    cors: true,
+    proxy: {
+      "/ws/": {
+        target: "http://127.0.0.1:3000/socket.io/",
+        ws: true,
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
+  define: {
+    global: {},
+  },
+});

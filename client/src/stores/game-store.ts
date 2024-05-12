@@ -6,12 +6,13 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { Socket } from "socket.io-client";
 import { createSocket } from "../utils/socket-io";
 import { GameStatus } from "../utils/enums";
+import { User } from "./user-store";
 
 export interface GameStore {
   pendingGames: Game[];
   inProgressGames: Game[];
 
-  connect: (userId: string) => void;
+  connect: (user: User) => void;
   disconnect: () => void;
   createGame: (dto: CreateGameDto) => void;
   joinGame: (gameId: string) => void;
@@ -26,13 +27,10 @@ export const useGamesStore = create<GameStore>()(
       pendingGames: [],
       inProgressGames: [],
 
-      connect: (userId: string) => {
-        console.log("connecting-store")
-        const _socket = createSocket(userId);
-        console.log("createSocket")
+      connect: (user: User) => {
+        const _socket = createSocket(user);
         socket = _socket;
-        socket.connect();
-        console.log("connect")
+        _socket.connect();
         _socket.on("connect", () => {
           socket?.emit("getGames", (games: Game[]) => {
             set({
@@ -40,13 +38,12 @@ export const useGamesStore = create<GameStore>()(
                 (g) => g.status === GameStatus.IN_PROGRESS
               ),
               pendingGames: games.filter(
-                (g) => g.status === GameStatus.PENDING && g.player2 === userId
+                (g) => g.status === GameStatus.PENDING && g.player2 === user.email
               ),
             });
           });
         });
         _socket.connect();
-        console.log("_socket.connect()")
         _socket.on("gameCreated", (game: Game) => {
           set({ pendingGames: [...get().pendingGames, game] });
         });

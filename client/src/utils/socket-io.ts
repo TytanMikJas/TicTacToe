@@ -1,12 +1,14 @@
 import { io } from "socket.io-client";
+import { User } from "../stores/user-store";
 
-export const socket = io( "",{
-    path: "/ws",
-    autoConnect: false,
-    transports: ["websocket"],
-});
 
-export const createSocket = (userId: string) => {
-    socket.auth = { userId };
-    return socket;
+export const createSocket = (user: User) => {
+    return io( "",{
+        path: "/ws",
+        autoConnect: false,
+        transports: ["websocket"],
+        query: {
+            accessToken: user.accessToken,
+        },
+    });
 }

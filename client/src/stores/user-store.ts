@@ -1,20 +1,24 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-type User = string;
+export type User = {
+  email: string;
+  accessToken: string;
+  refreshToken: string;
+};
 
 type UserStore = {
-  user: User | null;
+  user?: User;
   setUser: (user: User) => void;
-  logout: () => void;
+  logoutUser: () => void;
 };
 
 export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
-      user: null,
+      user: undefined,
       setUser: (user: User) => set({ user }),
-      logout: () => set({ user: null }),
+      logoutUser: () => set({ user: undefined }),
     }),
     { name: "user-storage", storage: createJSONStorage(() => localStorage) }
   )

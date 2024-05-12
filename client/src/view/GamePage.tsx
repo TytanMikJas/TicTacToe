@@ -7,9 +7,12 @@ import { Label } from "../components/shadcn/label";
 import { useGamesStore } from "../stores/game-store";
 import { useUserStore } from "../stores/user-store";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../utils/cognito";
 
 export default function GamePage() {
-  const { user } = useUserStore();
+  const navigate = useNavigate();
+  const { user, logoutUser } = useUserStore();
   const {
     pendingGames,
     inProgressGames,
@@ -19,23 +22,34 @@ export default function GamePage() {
     joinGame,
     makeMove,
   } = useGamesStore();
-  const myPendingGames = pendingGames.filter((g) => g.player2 === user);
+  const myPendingGames = pendingGames.filter((g) => g.player2 === user?.email);
   const [oponent, setoponent] = useState("");
 
   useEffect(() => {
-    console.log({ user });
-    connect(user!);
+    if (!user) {
+      return;
+    }
+    connect(user);
+    document.title = user!.email;
     return () => {
       disconnect();
     };
-  }, []);
+  }, [user]);
 
   return (
     <div className="flex">
       <div className="w-1/4 h-screen flex flex-col space-y-2 bg-gradient-to-r from-red-100 to-blue-100">
-        <WelcomeText user={user} />
+        <WelcomeText user={user!.email} />
         <div className="mx-3 flex flex-col">
           <div>
+            <Button
+              onClick={() =>
+                logout().then(() => {
+                  logoutUser();
+                  navigate("/login");
+                })
+              }
+            ></Button>
             <Label className="text-xl mb-2">Select an opponent</Label>
             <Input
               placeholder="Your friend"
@@ -46,14 +60,16 @@ export default function GamePage() {
             />
             <Button
               className="mt-2 w-full"
-              onClick={() => createGame({ userId: user!, opponentId: oponent })}
+              onClick={() =>
+                createGame({ userId: user!.email, opponentId: oponent })
+              }
             >
               Send a game invite
             </Button>
             <Separator text="OR" />
             <Button
               className="w-full"
-              onClick={() => createGame({ userId: user! })}
+              onClick={() => createGame({ userId: user!.email })}
             >
               Find a random Player
             </Button>
@@ -84,7 +100,7 @@ export default function GamePage() {
               <div>
                 <TicTacToe
                   game={game}
-                  player={user!}
+                  player={user!.email}
                   makeMove={(position: number) =>
                     makeMove({ gameId: game.id, square: position })
                   }
